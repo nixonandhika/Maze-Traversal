@@ -26,6 +26,8 @@ def printMaze(maze):
                 print(Back.GREEN, end = ' ')
             elif(maze[i][j] == 3):
                 print(Back.CYAN, end = ' ')
+            elif(maze[i][j] == 4):
+                print(Back.RED, end = ' ')
             else:
                 print(Back.WHITE, end = ' ')
         print()
@@ -37,52 +39,61 @@ def printMaze(maze):
 
 def BFS(x, y, visited, maze, dest):
     q = []
-    visited.append((x,y))
+    visited.append(((-1,-1),(x,y)))
     q.append((x,y))
     before = (x,y)
     maze[x][y] = 2
-    jalur = []
-    jalur.append((x,y))
     while(q):
-        # sleep(0.25)
-        printMaze(maze)
-        if((x,y) not in jalur):
-            jalur.append((x,y))
+        count = 0
         if((x,y) == dest):
-            print(jalur)
             break
-        print("current idx: ", end = ' ')
-        print((x,y))
         next = []
-        print(q)
         if(maze[x+1][y] == 0):
             if not (x+1,y) in visited and (x+1,y) != before:
                 next.append((x+1,y))
+                count += 1
 
         if(maze[x-1][y] == 0):
             if not (x-1,y) in visited and (x-1,y) != before:
                 next.append((x-1,y))
+                count += 1
 
         if(maze[x][y+1] == 0):
             if not (x,y+1) in visited and (x,y+1) != before:
                 next.append((x,y+1))
+                count += 1
 
         if(maze[x][y-1] == 0):
             if not (x,y-1) in visited and (x,y-1) != before:
                 next.append((x,y-1))
+                count += 1
 
         q.pop(0)
 
         for i in next:
-            if(i not in visited):
-                print("di append: ", end = '')
-                print(i)
+            if((visited[len(visited)-1][0], i) not in visited):
                 q.append(i)
-                visited.append(i)
+                visited.append(((x,y),i))
                 before = i
                 maze[i[0]][i[1]] = 2
         x = q[0][0]
         y = q[0][1]
+
+    idx = ((0,0),(0,0))
+
+    for i in reversed(visited):
+        if(i[1] == dest):
+            idx = i
+            break;
+
+    mark = visited[visited.index(idx)][0]
+    maze[visited[visited.index(idx)][1][0]][visited[visited.index(idx)][1][1]] = 4
+    on_intersect = False
+    search = (-2,-2)
+    for i in reversed(visited):
+        if(i[1] == mark and not on_intersect):
+            maze[i[1][0]][i[1][1]] = 4
+            mark = i[0]
 
 def main():
     init()
@@ -123,20 +134,14 @@ def main():
         temp.append(3)
         maze.append(temp.copy())
 
-    for i in range(len(maze)):
-        print(maze[i])
-
-    printMaze(maze)
-
     print()
 
-    #Bagian menelusuri maze
     x = start_row;
     y = start_col + 1;
     visited = []
     BFS(x, y, visited, maze, (exit_row, exit_col+1))
 
-    # printMaze(maze)
+    printMaze(maze)
 
 
 if __name__ == "__main__":
