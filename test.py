@@ -4,6 +4,7 @@ from colorama import init
 from colorama import Fore, Back, Style
 from os import system, name
 from time import sleep
+from a_star import *
 
 def clear():
     if(name == 'nt'):
@@ -12,7 +13,7 @@ def clear():
         _ = system('clear')
 
 def printMaze(maze):
-    clear()
+    # clear()
     for i in range(len(maze[0])):
         print(Back.CYAN, end = ' ')
 
@@ -37,36 +38,32 @@ def printMaze(maze):
 
     print(Style.RESET_ALL)
 
-def BFS(x, y, visited, maze, dest):
+def BFS(x, y, dest, maze):
     q = []
-    visited.append(((-1,-1),(x,y)))
+    visited = []
     q.append((x,y))
+    visited.append(((-1,-1),(x,y)))
     before = (x,y)
     maze[x][y] = 2
     while(q):
-        count = 0
         if((x,y) == dest):
             break
         next = []
         if(maze[x+1][y] == 0):
             if not (x+1,y) in visited and (x+1,y) != before:
                 next.append((x+1,y))
-                count += 1
 
         if(maze[x-1][y] == 0):
             if not (x-1,y) in visited and (x-1,y) != before:
                 next.append((x-1,y))
-                count += 1
 
         if(maze[x][y+1] == 0):
             if not (x,y+1) in visited and (x,y+1) != before:
                 next.append((x,y+1))
-                count += 1
 
         if(maze[x][y-1] == 0):
             if not (x,y-1) in visited and (x,y-1) != before:
                 next.append((x,y-1))
-                count += 1
 
         q.pop(0)
 
@@ -136,12 +133,27 @@ def main():
 
     print()
 
+    print("Maze Input: ")
+    printMaze(maze)
+    print()
+
     x = start_row;
     y = start_col + 1;
-    visited = []
-    BFS(x, y, visited, maze, (exit_row, exit_col+1))
 
-    printMaze(maze)
+    print("Traversing Maze...")
+    print()
+
+    maze_bfs = copy.deepcopy(maze)
+    BFS(x, y, (exit_row, exit_col+1), maze_bfs)
+
+    print("RESULT(Green for traversed route, Red for final route): ")
+    print()
+
+    print("Result with BFS: ")
+    printMaze(maze_bfs)
+    print()
+
+    print("Result with A*: ")
 
 
 if __name__ == "__main__":
