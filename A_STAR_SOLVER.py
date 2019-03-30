@@ -81,15 +81,6 @@ def makeTile(rowPos, colPos):
 def isValidTile(rowPos, colPos):
     return (rowPos >= 0 and colPos >= 0 and rowPos < mazeMaxRow and colPos < mazeMaxCol and mazeMap[rowPos][colPos] == '0')
 
-#External File Management:
-f= open("1.txt","r+")
-mazeMap = [ [x for x in list(line) if x != '\n'] for line in f]
-mazeMaxRow = len(mazeMap)
-mazeMaxCol = len(mazeMap[0])
-startPos = (searchColumnForX(0,'0'), 0)
-goalPos = (searchColumnForX(mazeMaxCol-1,'0'), mazeMaxCol-1)
-startTile = makeTile(startPos[0],startPos[1])
-goalTile = makeTile(goalPos[0],goalPos[1])
 
 # MAIN A-STAR ALGORITHM
 def a_Star_Algorithm():
@@ -143,15 +134,26 @@ def a_Star_Algorithm():
                     # add neighbor to liveTiles list:
                     heappush(liveTiles, (tile.cost, tile) )
                         
+#External File Management:
+f= open("1.txt","r+")
+mazeMap = [ [x for x in list(line) if x != '\n'] for line in f]
+mazeMaxRow = len(mazeMap)
+mazeMaxCol = len(mazeMap[0])
+startPos = (searchColumnForX(0,'0'), 0)
+goalPos = (searchColumnForX(mazeMaxCol-1,'0'), mazeMaxCol-1)
+startTile = makeTile(startPos[0],startPos[1])
+goalTile = makeTile(goalPos[0],goalPos[1])
 
+def main():
+    #MAIN:
+    print(mazeMap)
+    print(mazeMaxRow)
+    print(mazeMaxCol)
+    print(startTile.colPos)
+    print(goalTile.colPos)
+    #A star:
+    result = a_Star_Algorithm()
+    print(result)
+    print(len(result))
 
-#MAIN:
-print(mazeMap)
-print(mazeMaxRow)
-print(mazeMaxCol)
-print(startTile.colPos)
-print(goalTile.colPos)
-#A star:
-result = a_Star_Algorithm()
-print(result)
-print(len(result))
+main()
