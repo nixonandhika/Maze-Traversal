@@ -7,37 +7,54 @@ from colorama import Fore, Back, Style
 from os import system, name
 from time import sleep
 
+#Method for clear screen
 def clear():
-    if(name == 'nt'):
+    if(name == 'nt'): #Clear Windows shell screen
         _ = system('cls')
-    else:
+    else: #Clear Linux shell screen
         _ = system('clear')
 
+#Method for printing the maze
 def printMaze(maze):
-    # clear()
+
+    #Print upper border
     for i in range(len(maze[0])+2):
         print(Back.CYAN, end = ' ')
 
     print()
 
+    #Print color for every row
     for i in range(len(maze)):
+
+        #Print left border
         print(Back.CYAN, end = ' ')
+
+        #Print color for every column
         for j in range(len(maze[i])):
+            #Code 1 for wall
             if(maze[i][j] == 1):
                 print(Back.BLACK, end = ' ')
+            #Code 2 for traversed route
             elif(maze[i][j] == 2):
                 print(Back.RED, end = ' ')
+            #Code 3 for start tile
             elif(maze[i][j] == 3):
                 print(Back.BLUE, end = ' ')
+            #Code 4 for final route
             elif(maze[i][j] == 4):
                 print(Back.GREEN, end = ' ')
+            #Code 5 for goal tile
             elif(maze[i][j] == 5):
                 print(Back.MAGENTA, end = ' ')
+            #Color for available tile to traverse
             else:
                 print(Back.WHITE, end = ' ')
+
+        #Print right border
         print(Back.CYAN, end = ' ')
         print()
 
+    #Print lower border
     for i in range(len(maze[0])+2):
         print(Back.CYAN, end = ' ')
 
@@ -155,7 +172,6 @@ def a_Star_Algorithm():
     #push starting point:
     heappush(liveTiles, (startTile.cost,startTile))
     while len(liveTiles):
-        # printMaze(mazeMap)
         # pop current Tile from heap q:
         currentCost, currentTile = heappop(liveTiles)
         # add to traversed set:
@@ -185,94 +201,124 @@ def a_Star_Algorithm():
                     heappush(liveTiles, (tile.cost, tile) )
 
 def BFS(x, y, dest, maze):
+    #Initialize empty queue
     q = []
+    #Initialize visited list
     visited = []
+    #Add current tile to queue and visited
     q.append((x,y))
-    visited.append(((-1,-1),(x,y)))
-    before = (x,y)
+    visited.append(((-1,-1),(x,y))) #tuple of tuples (first tuple is parent tile and second tuple is current tile)
+    #Make the current tile value to 2 for traversed route
     maze[x][y] = 2
+    #While queue not empty
     while(q):
-        # print("curr idx: ", end = ' ')
-        # print((x,y))
-        # printMaze(maze)
+        #If current tile is equal to goal tile, BFS is done
         if((x,y) == dest):
             break
+        #Initialize list to store neighbors tile
         next = []
+        #If there's a route below the current tile
         if(x+1 < mazeMaxRow):
             if(maze[x+1][y] == 0):
-                if not (x+1,y) in visited and (x+1,y) != before:
+                if not (x+1,y) in visited:
                     next.append((x+1,y))
-
+        #If there's a route above the current tile
         if(x-1 >= 0):
             if(maze[x-1][y] == 0):
-                if not (x-1,y) in visited and (x-1,y) != before:
+                if not (x-1,y) in visited:
                     next.append((x-1,y))
-
+        #If there's a route on the right of current tile
         if(y+1 < mazeMaxCol):
             if(maze[x][y+1] == 0):
-                if not (x,y+1) in visited and (x,y+1) != before:
+                if not (x,y+1) in visited:
                     next.append((x,y+1))
-
+        #If there's a route on the left of current tile
         if(y-1 >= 0):
             if(maze[x][y-1] == 0):
-                if not (x,y-1) in visited and (x,y-1) != before:
+                if not (x,y-1) in visited:
                     next.append((x,y-1))
-
+        #Remove first element of queue
         q.pop(0)
-
+        #For every neighbors of current tile, add to queue and visited, and give code 2
         for i in next:
             if((visited[len(visited)-1][0], i) not in visited):
-                # print("di append: ", end = ' ')
-                # print(i)
                 q.append(i)
                 visited.append(((x,y),i))
-                before = i
                 maze[i[0]][i[1]] = 2
-        # print(q)
-        # print(visited)
 
+        #change current node to the first element in queue
         if(q):
             x = q[0][0]
             y = q[0][1]
 
-
+    #After BFS traverse until goal tile is found, backtrack from goal tile to start tile
     idx = ((0,0),(0,0))
 
+    #Search for index position in visited list where goal tile is found
     for i in reversed(visited):
         if(i[1] == dest):
             idx = i
             break;
 
+    #store parent tile of goal tile
     mark = visited[visited.index(idx)][0]
+    #give goal tile Green color
     maze[visited[visited.index(idx)][1][0]][visited[visited.index(idx)][1][1]] = 4
-    on_intersect = False
-    search = (-2,-2)
+    #loop from goal tile to start tile
     for i in reversed(visited):
-        if(i[1] == mark and not on_intersect):
+        if(i[1] == mark):
             maze[i[1][0]][i[1][1]] = 4
             mark = i[0]
+
+clear()
+print(" .----------------.  .----------------.  .----------------.  .----------------. ")
+print("| .--------------. || .--------------. || .--------------. || .--------------. |")
+print("| | ____    ____ | || |      __      | || |   ________   | || |  _________   | |")
+print("| ||_   \\  /   _|| || |     /  \\     | || |  |  __   _|  | || | |_   ___  |  | |")
+print("| |  |   \\/   |  | || |    / /\\ \\    | || |  |_/  / /    | || |   | |_  \\_|  | |")
+print("| |  | |\\  /| |  | || |   / ____ \\   | || |     .'.' _   | || |   |  _|  _   | |")
+print("| | _| |_\\/_| |_ | || | _/ /    \\ \\_ | || |   _/ /__/ |  | || |  _| |___/ |  | |")
+print("| ||_____||_____|| || ||____|  |____|| || |  |________|  | || | |_________|  | |")
+print("| |              | || |              | || |              | || |              | |")
+print("| '--------------' || '--------------' || '--------------' || '--------------' |")
+print(" '----------------'  '----------------'  '----------------'  '----------------' ")
+print("BY ABEL STANLEY & NIXON ANDHIKA")
+print()
 
 #External File Management:
 filename = input("Input maze file: ")
 print()
+#read maze file
 f= open(filename,"r")
+#map for the maze
 mazeMap = [ [int(x) for x in list(line) if x != '\n'] for line in f]
+#total row of maze
 mazeMaxRow = len(mazeMap)
+#total column of maze
 mazeMaxCol = len(mazeMap[0])
+#start index
 startPos = (searchColumnForX(0,0), 0)
+#goal index
 goalPos = (searchColumnForX(mazeMaxCol-1,0), mazeMaxCol-1)
+#start tile
 startTile = makeTile(startPos[0],startPos[1])
+#goal tile
 goalTile = makeTile(goalPos[0],goalPos[1])
 
 def main():
+    #Initialize colorama
     init()
 
+    #x is start row index
     x = startPos[0]
+    #y is start col index
     y = startPos[1]
 
+    #give different color for start and goal tile
     mazeMap[x][y] = 3
     mazeMap[goalPos[0]][goalPos[1]] = 5
 
+    #print input maze
     print("Maze Input: ")
     printMaze(mazeMap)
     print()
@@ -281,37 +327,44 @@ def main():
     print("Traversing Maze...")
     print()
 
+    #reset start tile and goal tile into available tile
     mazeMap[x][y] = 0
     mazeMap[goalPos[0]][goalPos[1]] = 0
 
+    #copy the maze map and do BFS
     maze_bfs = copy.deepcopy(mazeMap)
     BFS(x, y, goalPos, maze_bfs)
 
-    print("RESULT(Green for traversed route, Red for final route): ")
+    print("RESULT(RED for traversed route, GREEN for final route): ")
     print()
 
+    #give different color for start and goal tile
     maze_bfs[x][y] = 3
     maze_bfs[goalPos[0]][goalPos[1]] = 5
 
+    #print maze result with BFS
     print("Result with BFS: ")
     printMaze(maze_bfs)
     print()
 
+    #reset start tile and goal tile into available tile
     mazeMap[x][y] = 0
     mazeMap[goalPos[0]][goalPos[1]] = 0
 
     #A star:
     print("Result with A*: ")
+    #Store the path from start tile to goal tile
     result = a_Star_Algorithm()
+    #Color the final path with Green
     for i in result:
         mazeMap[i[0]][i[1]] = 4
 
+    #give different color for start and goal tile
     mazeMap[x][y] = 3
     mazeMap[goalPos[0]][goalPos[1]] = 5
 
+    #print maze result with A*
     printMaze(mazeMap)
-
-# main()
 
 if __name__ == "__main__":
     main()
