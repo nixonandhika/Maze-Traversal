@@ -79,8 +79,11 @@ class Tile(object):
     def modifyTile(self, targetTile):
         self.g = targetTile.g+1
         #poi:
-        self.h = targetTile.computeHeuristic()
         self.parent = targetTile
+        if(targetTile.parent == None):
+            self.h = targetTile.computeHeuristic()
+        else:
+            self.h = targetTile.computeHeuristic()+targetTile.parent.computeHeuristic()
         self.cost = int(self.h + self.g)
 
     # When goal is found, generate path back to the start point
