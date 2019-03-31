@@ -14,7 +14,7 @@ def clear():
         _ = system('clear')
 
 def printMaze(maze):
-    clear()
+    # clear()
     for i in range(len(maze[0])+2):
         print(Back.CYAN, end = ' ')
 
@@ -28,9 +28,11 @@ def printMaze(maze):
             elif(maze[i][j] == 2):
                 print(Back.RED, end = ' ')
             elif(maze[i][j] == 3):
-                print(Back.CYAN, end = ' ')
+                print(Back.BLUE, end = ' ')
             elif(maze[i][j] == 4):
                 print(Back.GREEN, end = ' ')
+            elif(maze[i][j] == 5):
+                print(Back.MAGENTA, end = ' ')
             else:
                 print(Back.WHITE, end = ' ')
         print(Back.CYAN, end = ' ')
@@ -150,7 +152,7 @@ def a_Star_Algorithm():
     #push starting point:
     heappush(liveTiles, (startTile.cost,startTile))
     while len(liveTiles):
-        printMaze(mazeMap)
+        # printMaze(mazeMap)
         # pop current Tile from heap q:
         currentCost, currentTile = heappop(liveTiles)
         # add to traversed set:
@@ -178,7 +180,6 @@ def a_Star_Algorithm():
                     tile.modifyTile(currentTile)
                     # add neighbor to liveTiles list:
                     heappush(liveTiles, (tile.cost, tile) )
-<<<<<<< HEAD:main.py
 
 def BFS(x, y, dest, maze):
     q = []
@@ -254,29 +255,31 @@ print()
 f= open(filename,"r")
 mazeMap = [ [int(x) for x in list(line) if x != '\n'] for line in f]
 mazeMaxRow = len(mazeMap)
-print(mazeMaxRow)
 mazeMaxCol = len(mazeMap[0])
-print(mazeMaxCol)
 startPos = (searchColumnForX(0,0), 0)
-print(startPos)
 goalPos = (searchColumnForX(mazeMaxCol-1,0), mazeMaxCol-1)
-print(goalPos)
 startTile = makeTile(startPos[0],startPos[1])
 goalTile = makeTile(goalPos[0],goalPos[1])
 
 def main():
     init()
 
+    x = startPos[0]
+    y = startPos[1]
+
+    mazeMap[x][y] = 3
+    mazeMap[goalPos[0]][goalPos[1]] = 5
+
     print("Maze Input: ")
     printMaze(mazeMap)
     print()
 
     #BFS
-    x = startPos[0];
-    y = startPos[1];
-
     print("Traversing Maze...")
     print()
+
+    mazeMap[x][y] = 0
+    mazeMap[goalPos[0]][goalPos[1]] = 0
 
     maze_bfs = copy.deepcopy(mazeMap)
     BFS(x, y, goalPos, maze_bfs)
@@ -284,44 +287,28 @@ def main():
     print("RESULT(Green for traversed route, Red for final route): ")
     print()
 
+    maze_bfs[x][y] = 3
+    maze_bfs[goalPos[0]][goalPos[1]] = 5
+
     print("Result with BFS: ")
     printMaze(maze_bfs)
     print()
+
+    mazeMap[x][y] = 0
+    mazeMap[goalPos[0]][goalPos[1]] = 0
 
     #A star:
     print("Result with A*: ")
     result = a_Star_Algorithm()
     for i in result:
         mazeMap[i[0]][i[1]] = 4
+
+    mazeMap[x][y] = 3
+    mazeMap[goalPos[0]][goalPos[1]] = 5
+
     printMaze(mazeMap)
 
 # main()
 
 if __name__ == "__main__":
     main()
-=======
-                        
-#External File Management:
-f= open("1.txt","r+")
-mazeMap = [ [x for x in list(line) if x != '\n'] for line in f]
-mazeMaxRow = len(mazeMap)
-mazeMaxCol = len(mazeMap[0])
-startPos = (searchColumnForX(0,'0'), 0)
-goalPos = (searchColumnForX(mazeMaxCol-1,'0'), mazeMaxCol-1)
-startTile = makeTile(startPos[0],startPos[1])
-goalTile = makeTile(goalPos[0],goalPos[1])
-
-def main():
-    #MAIN:
-    print(mazeMap)
-    print(mazeMaxRow)
-    print(mazeMaxCol)
-    print(startTile.colPos)
-    print(goalTile.colPos)
-    #A star:
-    result = a_Star_Algorithm()
-    print(result)
-    print(len(result))
-
-main()
->>>>>>> 8ac92c59a39c4ee70dc6e648bba050f3c3264c5f:A_STAR_SOLVER.py
