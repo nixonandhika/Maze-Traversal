@@ -1,3 +1,11 @@
+#MAZE TRAVERSAL PROGRAM BY
+#Nixon Andhika - 13517059
+#Abel Stanley - 13517068
+#
+#Traverse Maze using BFS and A* algorithm
+#External library: Colorama
+#Python Version Used: 3.7.0
+
 #HEAP IMPORT:
 from heapq import heappush, heappop, heapify
 import copy
